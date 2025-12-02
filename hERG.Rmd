@@ -199,6 +199,31 @@ table_group <- table(active_groups)
 barplot(table_group)
 ```
 
+```{r}
+library(ggplot2)
+
+# convert to data frame for ggplot
+df_group <- as.data.frame(table(active_groups))
+colnames(df_group) <- c("Group", "Count")
+
+ggplot(df_group, aes(x = Group, y = Count, fill = Group)) +
+  geom_col(width = 0.6, color = "white", linewidth = 0.3) +
+  geom_text(aes(label = Count), vjust = -0.6, size = 4) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Number of Compounds per Group",
+    x = "Groups",
+    y = "Count"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "none",
+    axis.text.x = element_text(angle = 20, vjust = 1, hjust = 1)
+  )
+
+```
+
 
 ```{r}
 set.seed(42)
