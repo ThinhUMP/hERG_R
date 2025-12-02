@@ -1,0 +1,968 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\begin{center}
+  \vspace*{-2cm} % move logo up
+  \includegraphics[width=4cm]{figs/upc_logo.png}\\[1em] % <-- logo size and spacing
+  {
+    \LARGE \textbf{Chemoinformatic project} \\
+      \textbf{M1- ISDD}
+  } \\[0.5em]
+  Student name: Van Thinh TO \\
+  Student ID: 22518830
+\end{center}
+
+\section{Preparation of data and computation of molecule
+similarity}\label{preparation-of-data-and-computation-of-molecule-similarity}
+
+\subsection{Analysis of the data set}\label{analysis-of-the-data-set}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# load the necessary package}
+\FunctionTok{library}\NormalTok{(ChemmineR)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# load data set}
+\NormalTok{training\_data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"data/training\_data.csv"}\NormalTok{, }\AttributeTok{sep=}\StringTok{","}\NormalTok{)}
+\FunctionTok{dim}\NormalTok{(training\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 224945      5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{colnames}\NormalTok{(training\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "SID"       "partition" "activity"  "potency"   "smiles"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(training\_data}\SpecialCharTok{$}\NormalTok{activity)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##   Active Inactive 
+##     1453   223492
+\end{verbatim}
+
+How many molecules are included in the data set? How many are Active and
+how many are Inactive? There are 224945 molecules in the data set, which
+have 1453 active and 223492 inactive data points.
+
+What information is provided in each column? What is the data type of
+each variable?
+
+There are five columns in the data set: * ``SID'': a unique identifier
+(integer) * ``partition'': Indicates whether the molecule belongs to the
+Training or Test set (character) * ``activity'': Biological class:
+Active or Inactive (character) * ``potency'': Numerical activity value
+(e.g., --log(IC50) or pIC50) (numeric) * ``smiles'': Smiles string for
+each molecule (character)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(training\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    224945 obs. of  5 variables:
+##  $ SID      : int  405266972 405266969 405258654 405266973 405266971 439657910 440228774 381749740 405266954 381749741 ...
+##  $ partition: chr  "Training" "Training" "Training" "Training" ...
+##  $ activity : chr  "Active" "Active" "Active" "Active" ...
+##  $ potency  : num  9.3 9.3 9.3 9.3 9.22 ...
+##  $ smiles   : chr  "C1=CC(=C(C=C1N2C=C(N=N2)CN3C=CN=C3N)C(F)F)F" "C1=CC(=C(C=C1N2C=C(N=N2)CN3C=CN=C3N)OC(F)F)Cl" "CC(C1=C(C=CC(=C1)N2C=C(N=N2)CN3C=CN=C3N)Cl)(F)F" "CC(C1=C(C=CC(=C1)N2C=C(N=N2)CN3C=CN=C3N)F)(F)F" ...
+\end{verbatim}
+
+Check whether the data set contains any missing values (NA). If this is
+the case, remove all molecules with missing entries. How many molecules
+are removed?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# get nan data points}
+\CommentTok{\# which(is.na(training\_data), arr.ind = TRUE)}
+\FunctionTok{sum}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(training\_data))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 223157
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# get nan values for each column}
+\FunctionTok{sapply}\NormalTok{(training\_data, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{sum}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(x)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       SID partition  activity   potency    smiles 
+##         0         0         0    223157         0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# drop rows with nan value}
+\NormalTok{training\_data }\OtherTok{\textless{}{-}} \FunctionTok{na.omit}\NormalTok{(training\_data)}
+\FunctionTok{dim}\NormalTok{(training\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1788    5
+\end{verbatim}
+
+\subsection{Exploring the Chemical Space and Computing Molecular
+Similarity}\label{exploring-the-chemical-space-and-computing-molecular-similarity}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# create data set for the sdf conversion}
+\NormalTok{herg }\OtherTok{\textless{}{-}}\NormalTok{ training\_data[}\FunctionTok{c}\NormalTok{(}\StringTok{"smiles"}\NormalTok{, }\StringTok{"SID"}\NormalTok{)]}
+\FunctionTok{write.table}\NormalTok{(herg, }\StringTok{"data/herg.smi"}\NormalTok{, }\AttributeTok{sep =} \StringTok{"}\SpecialCharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\AttributeTok{quote =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{col.names =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# read sdf file after creation}
+\NormalTok{sdf\_df }\OtherTok{\textless{}{-}} \FunctionTok{read.SDFset}\NormalTok{(}\StringTok{"data/herg.sdf"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# compute the AP fingerprints}
+\NormalTok{ap }\OtherTok{\textless{}{-}} \FunctionTok{sdf2ap}\NormalTok{(sdf\_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# compute the similarity matrix}
+\CommentTok{\# simi\_matrix = matrix(0, nrow=length(ap),ncol=length(ap))}
+
+\CommentTok{\# for (i in 1:length(ap))\{}
+\CommentTok{\#   for (j in i:length(ap))\{}
+\CommentTok{\#     simi\_matrix[i, j] \textless{}{-} cmp.similarity(ap[i], ap[j])}
+\CommentTok{\#     simi\_matrix[j, i] \textless{}{-} cmp.similarity(ap[i], ap[j])}
+\CommentTok{\#   \}}
+\CommentTok{\# \}}
+
+\CommentTok{\# save similarity matrix for the later usage}
+\CommentTok{\# save(simi\_matrix, file="data/simi\_matrix.RData")}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# load the similarity matrix}
+\FunctionTok{load}\NormalTok{(}\StringTok{"data/simi\_matrix.RData"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# compute the dissimilarity matrix}
+\NormalTok{dissimi\_matrix }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{{-}}\NormalTok{simi\_matrix}
+
+\CommentTok{\# perform MDs}
+\NormalTok{mds }\OtherTok{\textless{}{-}} \FunctionTok{cmdscale}\NormalTok{(dissimi\_matrix)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Visualization MDs}
+\CommentTok{\# load ggplot}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{\# create data frame for visualization}
+\NormalTok{df\_mds }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{x =}\NormalTok{ mds[,}\DecValTok{1}\NormalTok{],}
+  \AttributeTok{y =}\NormalTok{ mds[,}\DecValTok{2}\NormalTok{],}
+  \AttributeTok{activity =}\NormalTok{ training\_data}\SpecialCharTok{$}\NormalTok{activity}
+\NormalTok{)}
+
+\CommentTok{\# plot}
+\FunctionTok{ggplot}\NormalTok{(df\_mds, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{color =}\NormalTok{ activity)) }\SpecialCharTok{+}
+  \CommentTok{\# scatter plot}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{x =} \StringTok{"MDS dimension 1"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"MDS dimension 2"}\NormalTok{,}
+    \AttributeTok{title =} \StringTok{"Multidimensional Scaling Results"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Activity"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# set theme}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# align the title}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-15-1.pdf}}
+
+We can observe that the molecule are widely dispersed. However, there is
+a huge overlap between active and inactive data points.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(training\_data}\SpecialCharTok{$}\NormalTok{activity)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##   Active Inactive 
+##     1453      335
+\end{verbatim}
+
+\section{Balancing the dataset and preparing training and test
+sets}\label{balancing-the-dataset-and-preparing-training-and-test-sets}
+
+\subsection{Cluster-based undersampling
+method}\label{cluster-based-undersampling-method}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Extract active molecules}
+\NormalTok{active\_idx }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(training\_data}\SpecialCharTok{$}\NormalTok{activity }\SpecialCharTok{==} \StringTok{"Active"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate the dissimilarity matrix for actives only}
+\NormalTok{dissimi\_act\_rep }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ simi\_matrix[active\_idx, active\_idx]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Perform hierarchical clustering}
+\NormalTok{hc }\OtherTok{\textless{}{-}} \FunctionTok{hclust}\NormalTok{(}\FunctionTok{dist}\NormalTok{(dissimi\_act\_rep), }\AttributeTok{method =} \StringTok{"ward.D2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Cut the dendrogram into 350 clusters}
+\NormalTok{active\_groups }\OtherTok{\textless{}{-}} \FunctionTok{cutree}\NormalTok{(hc, }\AttributeTok{k=}\DecValTok{350}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# plot the clusters}
+\FunctionTok{plot}\NormalTok{(hc)}
+\FunctionTok{rect.hclust}\NormalTok{(hc , }\AttributeTok{k =} \DecValTok{350}\NormalTok{, }\AttributeTok{border =} \DecValTok{2}\SpecialCharTok{:}\DecValTok{6}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-21-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Select one molecule per cluster}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{20022001}\NormalTok{) }\CommentTok{\# seed for reproduction}
+\NormalTok{selected\_active\_idx }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (group }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{350}\NormalTok{)\{}
+  \CommentTok{\# for each group, randomly choose one active molecule, then append to a vector}
+\NormalTok{  selected\_active\_idx }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(selected\_active\_idx, }\FunctionTok{sample}\NormalTok{(}\FunctionTok{which}\NormalTok{(active\_groups}\SpecialCharTok{==}\NormalTok{group), }\AttributeTok{size=}\DecValTok{1}\NormalTok{))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# create a balanced data set}
+\CommentTok{\# select inactive}
+\NormalTok{inactive\_idx }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(training\_data}\SpecialCharTok{$}\NormalTok{activity }\SpecialCharTok{==} \StringTok{"Inactive"}\NormalTok{)}
+
+\CommentTok{\# concate inactive and selected active}
+\NormalTok{balanced\_df }\OtherTok{\textless{}{-}}\NormalTok{ training\_data[}\FunctionTok{c}\NormalTok{(selected\_active\_idx, inactive\_idx),]}
+\CommentTok{\# rownames(balanced\_df) \textless{}{-} NULL \# reset row names}
+\CommentTok{\# rownames(balanced\_df) \textless{}{-} 1:nrow(balanced\_df)}
+\FunctionTok{dim}\NormalTok{(balanced\_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 685   5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Visualization MDs}
+\CommentTok{\# load ggplot}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{\# create data frame for visualization}
+\NormalTok{df\_mds\_selected }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \CommentTok{\# select mds coordinations for the balanced data set}
+  \AttributeTok{x =}\NormalTok{ mds[}\FunctionTok{c}\NormalTok{(selected\_active\_idx, inactive\_idx),}\DecValTok{1}\NormalTok{],}
+  \AttributeTok{y =}\NormalTok{ mds[}\FunctionTok{c}\NormalTok{(selected\_active\_idx, inactive\_idx),}\DecValTok{2}\NormalTok{],}
+  \AttributeTok{activity =}\NormalTok{ balanced\_df}\SpecialCharTok{$}\NormalTok{activity}
+\NormalTok{)}
+
+\CommentTok{\# plot}
+\FunctionTok{ggplot}\NormalTok{(df\_mds\_selected, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{color =}\NormalTok{ activity)) }\SpecialCharTok{+}
+  \CommentTok{\# scatter plot}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{x =} \StringTok{"MDS dimension 1"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"MDS dimension 2"}\NormalTok{,}
+    \AttributeTok{title =} \StringTok{"Multidimensional Scaling Results for the balanced data set"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Activity"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# set theme}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \CommentTok{\# align the title}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-24-1.pdf}}
+
+According to the Figure above, the cluster-based undersampling method
+avoids redundancy, preserves chemical diversity, and produces a balanced
+dataset suitable for building robust predictive models.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# save the balanced data set}
+\FunctionTok{save}\NormalTok{(balanced\_df, }\AttributeTok{file =} \StringTok{"data/balanced\_df.RData"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Preparing training and test
+set}\label{preparing-training-and-test-set}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# randomly select 80\% of molecules from the balanced data set}
+\NormalTok{training\_idx }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(balanced\_df), }\AttributeTok{size =} \DecValTok{8}\SpecialCharTok{/}\DecValTok{10} \SpecialCharTok{*} \FunctionTok{nrow}\NormalTok{(balanced\_df))}
+
+\CommentTok{\# get the training and test sets}
+\NormalTok{training\_df }\OtherTok{\textless{}{-}}\NormalTok{ balanced\_df[training\_idx,]}
+\NormalTok{test\_df }\OtherTok{\textless{}{-}}\NormalTok{ balanced\_df[}\SpecialCharTok{{-}}\NormalTok{training\_idx,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# check the data points for each partition}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{dim}\NormalTok{(balanced\_df))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 685   5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{dim}\NormalTok{(training\_df))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 548   5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{dim}\NormalTok{(test\_df))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 137   5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create a new variable to indicate whether each molecule belongs to the training or the test set}
+\NormalTok{balanced\_df[}\SpecialCharTok{{-}}\NormalTok{training\_idx,}\StringTok{"partition"}\NormalTok{] }\OtherTok{\textless{}{-}} \StringTok{"Test"}
+\FunctionTok{table}\NormalTok{(balanced\_df}\SpecialCharTok{$}\NormalTok{partition)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##     Test Training 
+##      137      548
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# check the distribution of Active and Inactive molecules in the training set}
+\FunctionTok{table}\NormalTok{(training\_df}\SpecialCharTok{$}\NormalTok{activity)}\SpecialCharTok{/}\FunctionTok{nrow}\NormalTok{(training\_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##    Active  Inactive 
+## 0.5182482 0.4817518
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# check the distribution of Active and Inactive molecules in the test set}
+\FunctionTok{table}\NormalTok{(test\_df}\SpecialCharTok{$}\NormalTok{activity)}\SpecialCharTok{/}\FunctionTok{nrow}\NormalTok{(test\_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##    Active  Inactive 
+## 0.4817518 0.5182482
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# save the training and test sets}
+\FunctionTok{save}\NormalTok{(training\_df, }\AttributeTok{file =} \StringTok{"data/training.RData"}\NormalTok{)}
+\FunctionTok{save}\NormalTok{(test\_df, }\AttributeTok{file =} \StringTok{"data/test.RData"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Prediction of molecule class (Active / Inactive) Using a k-NN
+Approach based on chemical
+similarity}\label{prediction-of-molecule-class-active-inactive-using-a-k-nn-approach-based-on-chemical-similarity}
+
+\subsection{First steps with the k-NN
+algorithm}\label{first-steps-with-the-k-nn-algorithm}
+
+\subsubsection{Manual computation}\label{manual-computation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Extract the training–training submatrix}
+\CommentTok{\# get training–training indices}
+\NormalTok{subtraining\_idx }\OtherTok{\textless{}{-}} \FunctionTok{strtoi}\NormalTok{(}\FunctionTok{row.names}\NormalTok{(training\_df))}
+\CommentTok{\# get submatrix}
+\NormalTok{subtraining\_simi\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ simi\_matrix[subtraining\_idx, subtraining\_idx] }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Assign NA to the diagonal of this submatrix}
+\FunctionTok{diag}\NormalTok{(subtraining\_simi\_matrix) }\OtherTok{=} \ConstantTok{NA}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# get the index of three molecules, which have the highest similarity compared to molecule 5}
+\NormalTok{man\_idx }\OtherTok{\textless{}{-}} \FunctionTok{order}\NormalTok{(subtraining\_simi\_matrix[}\DecValTok{5}\NormalTok{,], }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Identify the activity classes of the 3 neighbors of molecule 5}
+\NormalTok{votes }\OtherTok{\textless{}{-}}\NormalTok{ training\_df}\SpecialCharTok{$}\NormalTok{activity[man\_idx]}
+\NormalTok{votes}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Active"   "Inactive" "Inactive"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Determine the majority class}
+\FunctionTok{names}\NormalTok{(}\FunctionTok{which.max}\NormalTok{(}\FunctionTok{table}\NormalTok{(votes)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Inactive"
+\end{verbatim}
+
+\subsubsection{Building a k-NN model on the training
+set}\label{building-a-k-nn-model-on-the-training-set}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# function for training the knn model}
+\NormalTok{knn\_train }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(train, simi\_matrix, k)\{}
+\NormalTok{  pred }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(train))\{}
+    \CommentTok{\# get the indices of k neighbors}
+\NormalTok{    neighbor\_idx }\OtherTok{\textless{}{-}} \FunctionTok{order}\NormalTok{(simi\_matrix[i,], }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{k]}
+    \CommentTok{\# majority voting}
+\NormalTok{    votes }\OtherTok{\textless{}{-}}\NormalTok{ train}\SpecialCharTok{$}\NormalTok{activity[neighbor\_idx]}
+\NormalTok{    pred\_label }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(}\FunctionTok{which.max}\NormalTok{(}\FunctionTok{table}\NormalTok{(votes)))}
+    \CommentTok{\# update the label of the prediction vector}
+\NormalTok{    pred }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(pred, pred\_label)}
+\NormalTok{  \}}
+  \CommentTok{\# compute the confusion matrix}
+\NormalTok{  confusion\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(}\AttributeTok{True =}\NormalTok{ train}\SpecialCharTok{$}\NormalTok{activity, }\AttributeTok{Predicted =}\NormalTok{ pred)}
+  
+  \FunctionTok{return}\NormalTok{ (confusion\_matrix)}
+\NormalTok{\}}
+
+\CommentTok{\# function for evaluating the knn model}
+\NormalTok{knn\_eval }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(train, test, simi\_matrix, k)\{}
+\NormalTok{  pred }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(test))\{}
+    \CommentTok{\# get the indices of k neighbors}
+\NormalTok{    neighbor\_idx }\OtherTok{\textless{}{-}} \FunctionTok{order}\NormalTok{(simi\_matrix[i,], }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{k]}
+    \CommentTok{\# majority voting}
+\NormalTok{    votes }\OtherTok{\textless{}{-}}\NormalTok{ train}\SpecialCharTok{$}\NormalTok{activity[neighbor\_idx]}
+\NormalTok{    pred\_label }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(}\FunctionTok{which.max}\NormalTok{(}\FunctionTok{table}\NormalTok{(votes)))}
+    \CommentTok{\# update the label of the prediction vector}
+\NormalTok{    pred }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(pred, pred\_label)}
+\NormalTok{  \}}
+  \CommentTok{\# compute the confusion matrix}
+\NormalTok{  confusion\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(}\AttributeTok{True =}\NormalTok{ test}\SpecialCharTok{$}\NormalTok{activity, }\AttributeTok{Predicted =}\NormalTok{ pred)}
+  
+  \FunctionTok{return}\NormalTok{ (confusion\_matrix)}
+\NormalTok{\}}
+
+\CommentTok{\# function to extract classification metrics}
+\NormalTok{class\_metrics }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(confusion\_matrix)\{}
+  \CommentTok{\# extract TP, FN, FP, TN values}
+\NormalTok{  TP }\OtherTok{\textless{}{-}}\NormalTok{ confusion\_matrix[}\StringTok{"Active"}\NormalTok{, }\StringTok{"Active"}\NormalTok{]}
+\NormalTok{  FN }\OtherTok{\textless{}{-}}\NormalTok{ confusion\_matrix[}\StringTok{"Active"}\NormalTok{, }\StringTok{"Inactive"}\NormalTok{]}
+\NormalTok{  FP }\OtherTok{\textless{}{-}}\NormalTok{ confusion\_matrix[}\StringTok{"Inactive"}\NormalTok{, }\StringTok{"Active"}\NormalTok{]}
+\NormalTok{  TN }\OtherTok{\textless{}{-}}\NormalTok{ confusion\_matrix[}\StringTok{"Inactive"}\NormalTok{, }\StringTok{"Inactive"}\NormalTok{]}
+  
+  \CommentTok{\# calculate metrics}
+\NormalTok{  accuracy  }\OtherTok{\textless{}{-}}\NormalTok{ (TP }\SpecialCharTok{+}\NormalTok{ TN) }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{(confusion\_matrix)}
+\NormalTok{  recall    }\OtherTok{\textless{}{-}}\NormalTok{ TP }\SpecialCharTok{/}\NormalTok{ (TP }\SpecialCharTok{+}\NormalTok{ FN)}
+\NormalTok{  precision }\OtherTok{\textless{}{-}}\NormalTok{ TP }\SpecialCharTok{/}\NormalTok{ (TP }\SpecialCharTok{+}\NormalTok{ FP)}
+\NormalTok{  specificity }\OtherTok{\textless{}{-}}\NormalTok{ TN }\SpecialCharTok{/}\NormalTok{ (TN }\SpecialCharTok{+}\NormalTok{ FP)}
+\NormalTok{  balance\_accuracy }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(recall, specificity)}
+\NormalTok{  f1\_score }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{2} \SpecialCharTok{*}\NormalTok{ recall }\SpecialCharTok{*}\NormalTok{ precision)}\SpecialCharTok{/}\NormalTok{(recall }\SpecialCharTok{+}\NormalTok{ precision)}
+  
+  \FunctionTok{return}\NormalTok{ (}
+    \FunctionTok{list}\NormalTok{(}
+      \AttributeTok{accuracy=}\NormalTok{accuracy, }
+      \AttributeTok{recall=}\NormalTok{recall, }
+      \AttributeTok{precision=}\NormalTok{precision, }
+      \AttributeTok{specificity=}\NormalTok{specificity,}
+      \AttributeTok{balance\_accuracy =}\NormalTok{ balance\_accuracy,}
+      \AttributeTok{f1\_score =}\NormalTok{ f1\_score}
+\NormalTok{      )}
+\NormalTok{  )}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Implementing the k-NN model: selection of the optimal number
+of
+neighbors}\label{implementing-the-k-nn-model-selection-of-the-optimal-number-of-neighbors}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# randomly select 90\% of molecules from the training data set and 10\% for the validation set}
+\NormalTok{train\_idx }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(training\_df), }\AttributeTok{size =} \DecValTok{9}\SpecialCharTok{/}\DecValTok{10} \SpecialCharTok{*} \FunctionTok{nrow}\NormalTok{(training\_df))}
+
+\CommentTok{\# get the training and test sets}
+\NormalTok{train\_df }\OtherTok{\textless{}{-}}\NormalTok{ training\_df[train\_idx,]}
+\NormalTok{valid\_df }\OtherTok{\textless{}{-}}\NormalTok{ training\_df[}\SpecialCharTok{{-}}\NormalTok{train\_idx,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Extract the training–training submatrix}
+\CommentTok{\# get training–training indices}
+\NormalTok{train\_idx }\OtherTok{\textless{}{-}} \FunctionTok{strtoi}\NormalTok{(}\FunctionTok{row.names}\NormalTok{(train\_df))}
+\CommentTok{\# get submatrix}
+\NormalTok{train\_simi\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ simi\_matrix[train\_idx, train\_idx]}
+\CommentTok{\# Assign NA to the diagonal of this submatrix}
+\FunctionTok{diag}\NormalTok{(train\_simi\_matrix) }\OtherTok{=} \ConstantTok{NA}
+\FunctionTok{dim}\NormalTok{(train\_simi\_matrix)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 493 493
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# select the matrix for evaluating the knn model}
+\NormalTok{valid\_idx }\OtherTok{\textless{}{-}} \FunctionTok{strtoi}\NormalTok{(}\FunctionTok{row.names}\NormalTok{(valid\_df))}
+\NormalTok{valid\_simi\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ simi\_matrix[valid\_idx, train\_idx]}
+\FunctionTok{dim}\NormalTok{(valid\_simi\_matrix)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  55 493
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_result }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \StringTok{"k"} \OtherTok{=} \FunctionTok{integer}\NormalTok{(),}
+  \StringTok{"accuracy"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"recall"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"precision"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"specificity"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"balance\_accuracy"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"f1\_score"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{()}
+\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{2}\SpecialCharTok{:}\DecValTok{20}\NormalTok{)\{}
+\NormalTok{  confusion\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{knn\_train}\NormalTok{(}\AttributeTok{train=}\NormalTok{train\_df, }\AttributeTok{simi\_matrix=}\NormalTok{train\_simi\_matrix, }\AttributeTok{k=}\NormalTok{k)}
+\NormalTok{  metrics }\OtherTok{=} \FunctionTok{class\_metrics}\NormalTok{(confusion\_matrix)}
+\NormalTok{  df\_result }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(}
+\NormalTok{    df\_result,}
+    \FunctionTok{data.frame}\NormalTok{(}
+         \AttributeTok{k =}\NormalTok{ k,}
+         \AttributeTok{accuracy =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{accuracy,}
+         \AttributeTok{recall =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{recall,}
+         \AttributeTok{precision =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{precision,}
+         \AttributeTok{specificity =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{specificity,}
+         \AttributeTok{balance\_accuracy =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{balance\_accuracy,}
+         \AttributeTok{f1\_score =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{f1\_score}
+\NormalTok{       )}
+\NormalTok{    )}
+\NormalTok{\}}
+
+\CommentTok{\# Validate the model}
+\NormalTok{df\_result\_valid }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \StringTok{"k"} \OtherTok{=} \FunctionTok{integer}\NormalTok{(),}
+  \StringTok{"accuracy"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"recall"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"precision"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"specificity"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"balance\_accuracy"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"f1\_score"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{()}
+\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{2}\SpecialCharTok{:}\DecValTok{20}\NormalTok{)\{}
+\NormalTok{  confusion\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{knn\_eval}\NormalTok{(}
+    \AttributeTok{train=}\NormalTok{train\_df, }
+    \AttributeTok{test =}\NormalTok{ valid\_df, }
+    \AttributeTok{simi\_matrix =}\NormalTok{ valid\_simi\_matrix, }
+    \AttributeTok{k=}\NormalTok{k}
+\NormalTok{    )}
+\NormalTok{  metrics }\OtherTok{=} \FunctionTok{class\_metrics}\NormalTok{(confusion\_matrix)}
+\NormalTok{  df\_result\_valid }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(}
+\NormalTok{    df\_result\_valid, }
+    \FunctionTok{data.frame}\NormalTok{(}
+         \AttributeTok{k =}\NormalTok{ k,}
+         \AttributeTok{accuracy =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{accuracy,}
+         \AttributeTok{recall =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{recall,}
+         \AttributeTok{precision =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{precision,}
+         \AttributeTok{specificity =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{specificity,}
+         \AttributeTok{balance\_accuracy =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{balance\_accuracy,}
+         \AttributeTok{f1\_score =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{f1\_score}
+\NormalTok{       )}
+\NormalTok{    )}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+
+\NormalTok{df\_train\_long }\OtherTok{\textless{}{-}}\NormalTok{ df\_result }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{k, }\AttributeTok{names\_to =} \StringTok{"metric"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"value"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{partition =} \StringTok{"Train"}\NormalTok{)}
+
+\NormalTok{df\_valid\_long }\OtherTok{\textless{}{-}}\NormalTok{ df\_result\_valid }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{k, }\AttributeTok{names\_to =} \StringTok{"metric"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"value"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{partition =} \StringTok{"Validation"}\NormalTok{)}
+
+\NormalTok{df\_both }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(df\_train\_long, df\_valid\_long)}
+
+\FunctionTok{ggplot}\NormalTok{(df\_both, }\FunctionTok{aes}\NormalTok{(k, value, }\AttributeTok{color =}\NormalTok{ partition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ metric, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \FunctionTok{unique}\NormalTok{(df\_both}\SpecialCharTok{$}\NormalTok{k)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Training vs Validation Metrics"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"k"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Value"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Dataset"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-42-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+
+\CommentTok{\#pivot the table}
+\NormalTok{df\_long }\OtherTok{\textless{}{-}}\NormalTok{ df\_result }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{k, }\AttributeTok{names\_to =} \StringTok{"metric"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"value"}\NormalTok{)}
+
+\CommentTok{\# plot}
+\FunctionTok{ggplot}\NormalTok{(df\_long, }\FunctionTok{aes}\NormalTok{(k, value)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C73D2"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#1B4B8F"}\NormalTok{, }\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# create subfig for each metric 2 columns, 3 rows}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ metric, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}   
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \FunctionTok{unique}\NormalTok{(df\_long}\SpecialCharTok{$}\NormalTok{k)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Metrics vs k"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"k"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Value"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# align the title}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-43-1.pdf}}
+
+\subsection{Evaluating the performance of the model on the test
+set}\label{evaluating-the-performance-of-the-model-on-the-test-set}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# select the matrix for evaluating the knn model}
+\NormalTok{subtest\_idx }\OtherTok{\textless{}{-}} \FunctionTok{strtoi}\NormalTok{(}\FunctionTok{row.names}\NormalTok{(test\_df))}
+\NormalTok{subtest\_simi\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ simi\_matrix[subtest\_idx, subtraining\_idx] }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Evaluate the model}
+\NormalTok{df\_result\_test }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \StringTok{"k"} \OtherTok{=} \FunctionTok{integer}\NormalTok{(),}
+  \StringTok{"accuracy"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"recall"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"precision"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"specificity"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"balance\_accuracy"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{(),}
+  \StringTok{"f1\_score"} \OtherTok{=} \FunctionTok{numeric}\NormalTok{()}
+\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{2}\SpecialCharTok{:}\DecValTok{20}\NormalTok{)\{}
+\NormalTok{  confusion\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{knn\_eval}\NormalTok{(}
+    \AttributeTok{train=}\NormalTok{training\_df, }
+    \AttributeTok{test =}\NormalTok{ test\_df, }
+    \AttributeTok{simi\_matrix=}\NormalTok{subtest\_simi\_matrix, }
+    \AttributeTok{k=}\NormalTok{k}
+\NormalTok{    )}
+\NormalTok{  metrics }\OtherTok{=} \FunctionTok{class\_metrics}\NormalTok{(confusion\_matrix)}
+\NormalTok{  df\_result\_test }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(}
+\NormalTok{    df\_result\_test, }
+    \FunctionTok{data.frame}\NormalTok{(}
+         \AttributeTok{k =}\NormalTok{ k,}
+         \AttributeTok{accuracy =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{accuracy,}
+         \AttributeTok{recall =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{recall,}
+         \AttributeTok{precision =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{precision,}
+         \AttributeTok{specificity =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{specificity,}
+         \AttributeTok{balance\_accuracy =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{balance\_accuracy,}
+         \AttributeTok{f1\_score =}\NormalTok{ metrics}\SpecialCharTok{$}\NormalTok{f1\_score}
+\NormalTok{       )}
+\NormalTok{    )}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+
+\CommentTok{\#pivot the table}
+\NormalTok{df\_long }\OtherTok{\textless{}{-}}\NormalTok{ df\_result\_test }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{k, }\AttributeTok{names\_to =} \StringTok{"metric"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"value"}\NormalTok{)}
+
+\CommentTok{\# plot}
+\FunctionTok{ggplot}\NormalTok{(df\_long, }\FunctionTok{aes}\NormalTok{(k, value)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C73D2"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#1B4B8F"}\NormalTok{, }\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ metric, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}   \CommentTok{\# 2 columns, 3 rows}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \FunctionTok{unique}\NormalTok{(df\_long}\SpecialCharTok{$}\NormalTok{k)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Metrics vs k"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"k"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Value"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# align the title}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-46-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(df\_result[}\DecValTok{2}\NormalTok{,])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   k  accuracy    recall precision specificity balance_accuracy  f1_score
+## 2 3 0.8255578 0.8250951  0.844358    0.826087        0.8250951 0.8346154
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(df\_result\_valid[}\DecValTok{2}\NormalTok{,])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   k  accuracy    recall precision specificity balance_accuracy  f1_score
+## 2 3 0.8181818 0.8095238 0.7391304   0.8235294        0.8095238 0.7727273
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(df\_result\_test[}\DecValTok{2}\NormalTok{,])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   k  accuracy    recall precision specificity balance_accuracy  f1_score
+## 2 3 0.8248175 0.8333333 0.8088235   0.8169014        0.8333333 0.8208955
+\end{verbatim}
+
+\end{document}
