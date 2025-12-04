@@ -53,11 +53,12 @@ How many molecules are included in the data set? How many are Active and how man
 
 What information is provided in each column? What is the data type of each variable?
 There are five columns in the data set: 
-* “SID”: a unique identifier (integer) 
-* “partition”: Indicates whether the molecule belongs to the Training or Test set (character) 
-* “activity”: Biological class: Active or Inactive (character) 
-* “potency”: Numerical activity value (e.g., –log(IC50) or pIC50) (numeric) 
-* “smiles”: Smiles string for each molecule (character)
+
+- **SID**: unique identifier for each molecule *(integer)*
+- **partition**: indicates Training or Test set *(character)*
+- **activity**: biological class (Active / Inactive) *(character)*
+- **potency**: numerical activity value, e.g., –log(IC50) *(numeric)*
+- **smiles**: SMILES string representing each molecule *(character)*
 
 ```{r}
 str(training_data)
@@ -101,17 +102,18 @@ ap <- sdf2ap(sdf_df)
 ```
 
 ```{r}
-# compute the similarity matrix
-simi_matrix = matrix(0, nrow=length(ap),ncol=length(ap))
-for (i in 1:length(ap)){
-  for (j in i:length(ap)){
-simi_matrix[i, j] <- cmp.similarity(ap[i], ap[j])
-simi_matrix[j, i] <- cmp.similarity(ap[i], ap[j])
-  }
-}
-
-# save similarity matrix for the later usage
-save(simi_matrix, file="data/simi_matrix.RData")
+# # compute the similarity matrix
+# simi_matrix = matrix(0, nrow=length(ap),ncol=length(ap))
+# for (i in 1:length(ap)){
+#   for (j in i:length(ap)){
+#     simi_ij <- cmp.similarity(ap[i], ap[j])
+#     simi_matrix[i, j] <- simi_ij
+#     simi_matrix[j, i] <- simi_ij
+#   }
+# }
+# 
+# # save similarity matrix for the later usage
+# save(simi_matrix, file="data/simi_matrix.RData")
 ```
 
 ```{r}
@@ -133,28 +135,29 @@ mds <- cmdscale(dissimi_matrix)
 # Visualization MDs
 # load ggplot
 library(ggplot2)
-# create data frame for visualization
-df_mds <- data.frame(
-  x = mds[,1],
-  y = mds[,2],
-  activity = training_data$activity
-)
-# plot
-ggplot(df_mds, aes(x = x, y = y, color = activity)) +
-  # scatter plot
-  geom_point(size = 0.8, alpha = 0.7) +
-  labs(
-    x = "MDS dimension 1",
-    y = "MDS dimension 2",
-    title = "Multidimensional Scaling Results",
-    color = "Activity"
-  ) +
-  # set theme
-  theme_minimal() +
-  # align the title
-  theme(
-    plot.title = element_text(hjust = 0.5)
+
+vis_mds <- function(mds, df, group_col){
+  # create data frame for visualization
+  df_mds <- data.frame(
+    x = mds[,1],
+    y = mds[,2],
+    color = df[,group_col]
   )
+  
+  # plot
+  ggplot(df_mds, aes(x = x, y = y, color = color)) +
+    # scatter plot
+    geom_point(size = 0.8, alpha = 0.7) +
+    labs(
+      x = "MDS dimension 1",
+      y = "MDS dimension 2",
+      color = group_col
+    ) +
+    # set theme
+    theme_minimal()
+}
+
+vis_mds(mds=mds, df=training_data, group_col="activity")
 ```
 
 We can observe that the molecule are widely dispersed. However, there is a huge overlap between active and inactive data points.
@@ -194,45 +197,12 @@ rect.hclust(hc , k = 350, border = 2:6)
 ```
 
 ```{r}
+# pdf("figs/comp_cluster.pdf", width = 10, height = 6)
 # to see how many compounds each group has
 table_group <- table(active_groups)
-barplot(table_group)
+barplot(table_group, col = rainbow(length(table_group)),)
+# dev.off()
 ```
-
-```{r}
-library(ggplot2)
-
-# convert to data frame for ggplot
-df_group <- as.data.frame(table(active_groups))
-colnames(df_group) <- c("Group", "Count")
-
-ggplot(df_group, aes(x = Group, y = Count, fill = Group)) +
-  geom_col(width = 0.6, color = "white", linewidth = 0.3) +
-  geom_text(aes(label = Count), vjust = -0.6, size = 4) +
-  scale_fill_brewer(palette = "Set2") +
-  labs(
-    title = "Number of Compounds per Group",
-    x = "Groups",
-    y = "Count"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    legend.position = "none",
-    axis.text.x = element_text(angle = 20, vjust = 1, hjust = 1)
-  )
-
-```
-
-
-```{r}
-set.seed(42)
-selected_active_idx <- c()
-for (group in 1:350){
-  selected_active_idx <- c(selected_active_idx, sample(which(active_groups==group), size=1))
-}
-```
-
 
 ```{r}
 # Select one molecule per cluster
@@ -250,38 +220,19 @@ for (group in 1:350){
 inactive_idx <- which(training_data$activity== "Inactive")
 # concate inactive and selected active
 balanced_df <- training_data[c(selected_active_idx, inactive_idx),]
-# rownames(balanced_df) <- NULL # reset row names
-# rownames(balanced_df) <- 1:nrow(balanced_df)
 dim(balanced_df)
 ```
 
 ```{r}
-# Visualization MDs
-# load ggplot
-library(ggplot2)
 # create data frame for visualization
-df_mds_selected <- data.frame(
+mds_selected <- data.frame(
   # select mds coordinations for the balanced data set
   x = mds[c(selected_active_idx, inactive_idx),1],
   y = mds[c(selected_active_idx, inactive_idx),2],
   activity = balanced_df$activity
 )
-# plot
-ggplot(df_mds_selected, aes(x = x, y = y, color = activity)) +
-# scatter plot
-geom_point(size = 0.8, alpha = 0.7) +
-labs(
-  x = "MDS dimension 1",
-  y = "MDS dimension 2",
-  title = "Multidimensional Scaling Results for the balanced data set",
-  color = "Activity"
-) +
-# set theme
-theme_minimal() +
-# align the title
-theme(
-  plot.title = element_text(hjust = 0.5)
-)
+
+vis_mds(mds=mds_selected, df=balanced_df, group_col="activity")
 ```
 
 According to the Figure above, the cluster-based undersampling method avoids redundancy, preserves chemical diversity, and produces a balanced dataset suitable for building robust predictive models.
@@ -294,28 +245,12 @@ save(balanced_df, file = "data/balanced_df.RData")
 ## Preparing training and test set
 
 ```{r}
+set.seed(20022001)
 # randomly select 80% of molecules from the balanced data set
 training_idx <- sample(1:nrow(balanced_df), size = 8/10 * nrow(balanced_df))
 # get the training and test sets
 training_df <- balanced_df[training_idx,]
 test_df <- balanced_df[-training_idx,]
-```
-
-2 files: 1 slide, 1 code
-for slide: 5 slides: mds imbalanced, balanced, mds for training and test now (they should be miscible), clusters, tables for training and test (do cross)
-
-```{r}
-# Extract the training–training submatrix
-# get training–training indices
-subtraining_idx <- strtoi(row.names(training_df))
-# get submatrix
-subtraining_simi_matrix <- simi_matrix[subtraining_idx, subtraining_idx]
-```
-
-```{r}
-# perform MDs
-mds <- cmdscale(dissimi_matrix)
-```
 ```
 
 ```{r}
@@ -330,7 +265,6 @@ print(dim(training_df))
 ```{r}
 print(dim(test_df))
 ```
-
 
 ```{r}
 # Create a new variable to indicate whether each molecule belongs to the training or the test set
@@ -348,13 +282,15 @@ table(training_df$activity)/nrow(training_df)
 table(test_df$activity)/nrow(test_df)
 ```
 
+```{r}
+vis_mds(mds=mds_selected, df=balanced_df, group_col="partition")
+```
 
 ```{r}
 # save the training and test sets
 save(training_df, file = "data/training.RData")
 save(test_df, file = "data/test.RData")
 ```
-
 
 # Prediction of molecule class (Active/Inactive) Using a k-NN Approach based on chemical similarity
 ## First steps with the k-NN algorithm
@@ -363,19 +299,19 @@ save(test_df, file = "data/test.RData")
 ```{r}
 # Extract the training–training submatrix
 # get training–training indices
-subtraining_idx <- strtoi(row.names(training_df))
+training_idx <- strtoi(row.names(training_df))
 # get submatrix
-subtraining_simi_matrix <- simi_matrix[subtraining_idx, subtraining_idx]
+training_simi_matrix <- simi_matrix[training_idx, training_idx]
 ```
 
 ```{r}
 # Assign NA to the diagonal of this submatrix
-diag(subtraining_simi_matrix) = NA
+diag(training_simi_matrix) = NA
 ```
 
 ```{r}
 # get the index of three molecules, which have the highest similarity compared to molecule 5
-man_idx <- order(subtraining_simi_matrix[5,], decreasing = TRUE)[1:3]
+man_idx <- order(training_simi_matrix[5,], decreasing = TRUE)[1:3]
 ```
 
 ```{r}
@@ -457,165 +393,113 @@ class_metrics <- function(confusion_matrix){
 }
 ```
 
-```{r}
-knn <- function(train_df, simi_matrix, k){
-  pred_train <- c()
-  for (i in 1:nrow(train_df)){
-    manual_idx <- order(simi_matrix[i,], decreasing = TRUE)[1:k]
-    votes <- train_df$activity[manual_idx]
-    pred_train <- c(pred_train, names(which.max(table(votes))))
-  }
-  confusion_matrix <- table(True = train_df$activity, Predicted = pred_train)
-  return (confusion_matrix)
-}
-```
-
-## Implementing the k-NN model: selection of the optimal number of neighbors
+## Implementing the k-NN model: selection of the optimal number of neighbors with cross-validation
 
 ```{r}
-# randomly select 90% of molecules from the training data set and 10% for the validation set
-train_idx <- sample(1:nrow(training_df), size = 9/10 * nrow(training_df))
-# get the training and test sets
-train_df <- training_df[train_idx,]
-valid_df <- training_df[-train_idx,]
-```
+set.seed(20022001)
 
-```{r}
-# Extract the training–training submatrix
-# get training–training indices
-train_idx <- strtoi(row.names(train_df))
-# get submatrix
-train_simi_matrix <- simi_matrix[train_idx, train_idx]
-```
-
-```{r}
-# Assign NA to the diagonal of this submatrix
-diag(train_simi_matrix) = NA
-dim(train_simi_matrix)
-```
-
-```{r}
-# select the matrix for evaluating the knn model
-valid_idx <- strtoi(row.names(valid_df))
-valid_simi_matrix <- simi_matrix[valid_idx, train_idx]
-dim(valid_simi_matrix)
-```
-
-```{r}
-df_result <- data.frame(
-  "k" = integer(),
-  "accuracy" = numeric(),
-  "recall" = numeric(),
-  "precision" = numeric(),
-  "specificity" = numeric(),
-  "balance_accuracy" = numeric(),
-  "f1_score" = numeric()
-)
-
-for (k in 2:20){
-  confusion_matrix <- knn_train(train=train_df, simi_matrix=train_simi_matrix, k=k)
-  metrics = class_metrics(confusion_matrix)
-  df_result <- rbind(
-    df_result,
-    data.frame(
-      k = k,
-      accuracy = metrics$accuracy,
-      recall = metrics$recall,
-      precision = metrics$precision,
-      specificity = metrics$specificity,
-      balance_accuracy = metrics$balance_accuracy,
-      f1_score = metrics$f1_score
-    )
-  )
-}
-
-# Validate the model
-df_result_valid <- data.frame(
-  "k" = integer(),
-  "accuracy" = numeric(),
-  "recall" = numeric(),
-  "precision" = numeric(),
-  "specificity" = numeric(),
-  "balance_accuracy" = numeric(),
-  "f1_score" = numeric()
-)
-
-for (k in 2:20){
-  confusion_matrix <- knn_eval(
-    train=train_df,
-    test = valid_df,
-    simi_matrix = valid_simi_matrix,
-    k=k
-  )
+cross_validation <- function(df, simi_matrix, K_folds){
+  # create 1-10 vectors and then randomly change their positions
+  fold_id <- sample(rep(1:K_folds, length.out = nrow(df)))
   
-  metrics = class_metrics(confusion_matrix)
-  df_result_valid <- rbind(
-    df_result_valid,
-    data.frame(
-      k = k,
-      accuracy = metrics$accuracy,
-      recall = metrics$recall,
-      precision = metrics$precision,
-      specificity = metrics$specificity,
-      balance_accuracy = metrics$balance_accuracy,
-      f1_score = metrics$f1_score
-    )
-  )
+  k_values <- 2:20
+  
+  # to store per-fold metrics
+  cv_raw <- data.frame()
+  
+  for (k in k_values) {
+    for (fold in 1:K_folds) {
+      # get train and valid indices for this fold
+      valid_idx_local <- which(fold_id == fold)
+      train_idx_local <- which(fold_id != fold)
+      
+      # split data
+      train_df_cv <- df[train_idx_local, ]
+      valid_df_cv <- df[valid_idx_local, ]
+      
+      # map to global indices to get subsimilarity matrix
+      train_row_idx <- strtoi(rownames(train_df_cv))
+      valid_row_idx <- strtoi(rownames(valid_df_cv))
+      
+      # similarity matrices for this fold
+      train_simi_matrix <- simi_matrix[train_row_idx, train_row_idx]
+      diag(train_simi_matrix) <- NA  # can not be neighbored by themselves
+      
+      # always get similarity between valid and train data points
+      valid_simi_matrix <- simi_matrix[valid_row_idx, train_row_idx]
+      
+      # evaluate on validation fold
+      conf_mat <- knn_eval(
+        train = train_df_cv,
+        test  = valid_df_cv,
+        simi_matrix = valid_simi_matrix,
+        k = k
+      )
+      
+      metrics <- class_metrics(conf_mat)
+      
+      # save this fold result
+      cv_raw <- rbind(
+        cv_raw,
+        data.frame(
+          k = k,
+          fold = fold,
+          accuracy = metrics$accuracy,
+          recall = metrics$recall,
+          precision = metrics$precision,
+          specificity = metrics$specificity,
+          balance_accuracy = metrics$balance_accuracy,
+          f1_score = metrics$f1_score
+        )
+      )
+    }
+  }
+  
+  return (cv_raw)
 }
+
+cv_raw <- cross_validation(df=training_df, simi_matrix=simi_matrix, K_folds=10)
 ```
 
+
 ```{r}
-library(tidyverse)
-
-df_train_long <- df_result |>
-  pivot_longer(cols =-k, names_to = "metric", values_to = "value") |>
-  mutate(partition = "Train")
-
-df_valid_long <- df_result_valid |>
-  pivot_longer(cols =-k, names_to = "metric", values_to = "value") |>
-  mutate(partition = "Validation")
-
-df_both <- bind_rows(df_train_long, df_valid_long)
-
-ggplot(df_both, aes(k, value, color = partition)) +
-  geom_line(size = 1) +
-  geom_point(size = 2) +
-  facet_wrap(~ metric, scales = "free_y", ncol = 2) +
-  scale_x_continuous(breaks = unique(df_both$k)) +
-  theme_minimal() +
-  labs(
-    title = "Training vs Validation Metrics",
-    x = "k",
-    y = "Value",
-    color = "Dataset"
-  ) +
-  theme(plot.title = element_text(hjust = 0.5))
+# # select the matrix for evaluating the knn model
+# training_idx <- strtoi(row.names(training_df))
+# train_simi_matrix <- simi_matrix[training_idx, training_idx]
+# diag(train_simi_matrix) <- NA
+# 
+# confusion_matrix <- knn_train(
+#   train=training_df,
+#   simi_matrix=train_simi_matrix,
+#   k=4
+# )
+# metrics = class_metrics(confusion_matrix)
+# 
+# metrics
 ```
 
+
 ```{r}
-library(tidyverse)
+library(tidyr)
 
-#pivot the table
-df_long <- df_result |>
-  pivot_longer(cols =-k, names_to = "metric", values_to = "value")
-
-# plot
-ggplot(df_long, aes(k, value)) +
-  geom_line(color = "#2C73D2", size = 1) +
-  geom_point(color = "#1B4B8F", size = 2) +
-  # create subfig for each metric 2 columns, 3 rows
-  facet_wrap(~ metric, scales = "free_y", ncol = 2) +
-  scale_x_continuous(breaks = unique(df_long$k)) +
-  theme_minimal() +
-  labs(
-    title = "Metrics vs k",
-    x = "k",
-    y = "Value"
-  ) +
-  # align the title
-  theme(
-    plot.title = element_text(hjust = 0.5)
+# long format: one row per (k, fold, metric)
+cv_long <- cv_raw |>
+  pivot_longer(
+    cols = c(accuracy, recall, precision, specificity, balance_accuracy, f1_score),
+    names_to = "metric",
+    values_to = "value"
   )
+
+# pdf("figs/cross_f1.pdf", width = 10, height = 6)
+# draw boxplot
+boxplot(
+  value ~ k,
+  data = cv_long[cv_long$metric == "f1_score", ],
+  ylab = "F1 score",
+  col = "cyan",
+  las = 2
+)
+# dev.off()
 ```
 
 ## Evaluating the performance of the model on the test set
@@ -623,77 +507,18 @@ ggplot(df_long, aes(k, value)) +
 ```{r}
 # select the matrix for evaluating the knn model
 subtest_idx <- strtoi(row.names(test_df))
-subtest_simi_matrix <- simi_matrix[subtest_idx, subtraining_idx]
-```
+training_idx <- strtoi(row.names(training_df))
 
-```{r}
-# Evaluate the model
-df_result_test <- data.frame(
-  "k" = integer(),
-  "accuracy" = numeric(),
-  "recall" = numeric(),
-  "precision" = numeric(),
-  "specificity" = numeric(),
-  "balance_accuracy" = numeric(),
-  "f1_score" = numeric()
-)
+test_simi_matrix <- simi_matrix[subtest_idx, training_idx]
 
-for (k in 2:20){
-  confusion_matrix <- knn_eval(
+confusion_matrix <- knn_eval(
   train=training_df,
   test = test_df,
-  simi_matrix=subtest_simi_matrix,
-  k=k
-  )
-  metrics = class_metrics(confusion_matrix)
-  df_result_test <- rbind(
-    df_result_test,
-    data.frame(
-      k = k,
-      accuracy = metrics$accuracy,
-      recall = metrics$recall,
-      precision = metrics$precision,
-      specificity = metrics$specificity,
-      balance_accuracy = metrics$balance_accuracy,
-      f1_score = metrics$f1_score
-    )
-  )
-}
-```
+  simi_matrix=test_simi_matrix,
+  k=4
+)
+metrics = class_metrics(confusion_matrix)
 
-```{r}
-library(tidyverse)
-
-#pivot the table
-df_long <- df_result_test |>
-  pivot_longer(cols =-k, names_to = "metric", values_to = "value")
-
-# plot
-ggplot(df_long, aes(k, value)) +
-  geom_line(color = "#2C73D2", size = 1) +
-  geom_point(color = "#1B4B8F", size = 2) +
-  facet_wrap(~ metric, scales = "free_y", ncol = 2) + scale_x_continuous(breaks = unique(df_long$k)) + # 2 columns, 3 rows
-  theme_minimal() +
-  labs(
-    title = "Metrics vs k",
-    x = "k",
-    y = "Value"
-  ) +
-  # align the title
-  theme(
-    plot.title = element_text(hjust = 0.5)
-  )
-```
-
-```{r}
-print(df_result[2,])
-```
-
-```{r}
-print(df_result_valid[2,])
-```
-
-```{r}
-print(df_result_test[2,])
+metrics
 ```
 
