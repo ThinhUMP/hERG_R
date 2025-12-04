@@ -320,7 +320,6 @@ barplot(test_ratio,
         lwd = 1.5)
 ```
 
-
 ```{r}
 # create data frame for visualization
 mds_selected <- data.frame(
