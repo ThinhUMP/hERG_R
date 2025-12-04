@@ -324,7 +324,7 @@ Similarity}\label{exploring-the-chemical-space-and-computing-molecular-similarit
 \NormalTok{  )}
   
   \CommentTok{\# plot}
-  \FunctionTok{ggplot}\NormalTok{(df\_mds, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{color =}\NormalTok{ color)) }\SpecialCharTok{+}
+  \FunctionTok{ggplot}\NormalTok{(df\_mds, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{color =}\NormalTok{ color, )) }\SpecialCharTok{+}
     \CommentTok{\# scatter plot}
     \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
     \FunctionTok{labs}\NormalTok{(}
@@ -394,8 +394,8 @@ method}\label{cluster-based-undersampling-method}
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# plot the clusters}
-\FunctionTok{plot}\NormalTok{(hc)}
-\FunctionTok{rect.hclust}\NormalTok{(hc , }\AttributeTok{k =} \DecValTok{350}\NormalTok{, }\AttributeTok{border =} \DecValTok{2}\SpecialCharTok{:}\DecValTok{6}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(hc, }\AttributeTok{hang =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}
+\FunctionTok{rect.hclust}\NormalTok{(hc , }\AttributeTok{k =} \DecValTok{350}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -406,7 +406,7 @@ method}\label{cluster-based-undersampling-method}
 \CommentTok{\# pdf("figs/comp\_cluster.pdf", width = 10, height = 6)}
 \CommentTok{\# to see how many compounds each group has}
 \NormalTok{table\_group }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(active\_groups)}
-\FunctionTok{barplot}\NormalTok{(table\_group, }\AttributeTok{col =} \FunctionTok{rainbow}\NormalTok{(}\FunctionTok{length}\NormalTok{(table\_group)),)}
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{sort}\NormalTok{(table\_group, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{),}\AttributeTok{col =} \FunctionTok{rainbow}\NormalTok{(}\FunctionTok{length}\NormalTok{(table\_group)),)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -417,6 +417,33 @@ method}\label{cluster-based-undersampling-method}
 \CommentTok{\# dev.off()}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# visualize top clusters with the highest number of compounds}
+\NormalTok{top\_cls }\OtherTok{\textless{}{-}} \DecValTok{10}
+\NormalTok{top\_cluster }\OtherTok{\textless{}{-}} \FunctionTok{strtoi}\NormalTok{(}\FunctionTok{names}\NormalTok{(}\FunctionTok{sort}\NormalTok{(table\_group, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{top\_cls]))}
+
+\CommentTok{\# create a copy of training data set}
+\NormalTok{training\_data\_cls }\OtherTok{\textless{}{-}}\NormalTok{ training\_data}
+
+\CommentTok{\# get the indices of compounds belong to top clusters and create cluster column for separation}
+\NormalTok{top\_cluster\_act\_idx }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (clu }\ControlFlowTok{in}\NormalTok{ top\_cluster)\{}
+\NormalTok{  top\_cluster\_act\_idx }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(top\_cluster\_act\_idx, }\FunctionTok{which}\NormalTok{(active\_groups}\SpecialCharTok{==}\NormalTok{clu))}
+\NormalTok{  training\_data\_cls[}\FunctionTok{which}\NormalTok{(active\_groups}\SpecialCharTok{==}\NormalTok{clu),}\StringTok{"cluster"}\NormalTok{] }\OtherTok{\textless{}{-}} \FunctionTok{toString}\NormalTok{(clu)}
+\NormalTok{\}}
+
+\CommentTok{\# get the similarity matrix and compute mds}
+\NormalTok{simi\_matrix\_top10 }\OtherTok{\textless{}{-}}\NormalTok{ simi\_matrix[top\_cluster\_act\_idx, top\_cluster\_act\_idx]}
+\NormalTok{mds\_top10 }\OtherTok{\textless{}{-}} \FunctionTok{cmdscale}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{simi\_matrix\_top10)}
+
+\CommentTok{\# visualize}
+\FunctionTok{vis\_mds}\NormalTok{(}\AttributeTok{mds=}\NormalTok{mds\_top10, }\AttributeTok{df=}\NormalTok{training\_data\_cls[top\_cluster\_act\_idx,], }\AttributeTok{group\_col=}\StringTok{"cluster"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-24-1.pdf}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -459,7 +486,7 @@ method}\label{cluster-based-undersampling-method}
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-26-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-27-1.pdf}}
 
 According to the Figure above, the cluster-based undersampling method
 avoids redundancy, preserves chemical diversity, and produces a balanced
@@ -534,7 +561,8 @@ set}\label{preparing-training-and-test-set}
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# check the distribution of Active and Inactive molecules in the training set}
-\FunctionTok{table}\NormalTok{(training\_df}\SpecialCharTok{$}\NormalTok{activity)}\SpecialCharTok{/}\FunctionTok{nrow}\NormalTok{(training\_df)}
+\NormalTok{train\_ratio }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(training\_df}\SpecialCharTok{$}\NormalTok{activity)}\SpecialCharTok{/}\FunctionTok{nrow}\NormalTok{(training\_df)}
+\NormalTok{train\_ratio}
 \end{Highlighting}
 \end{Shaded}
 
@@ -547,7 +575,8 @@ set}\label{preparing-training-and-test-set}
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# check the distribution of Active and Inactive molecules in the test set}
-\FunctionTok{table}\NormalTok{(test\_df}\SpecialCharTok{$}\NormalTok{activity)}\SpecialCharTok{/}\FunctionTok{nrow}\NormalTok{(test\_df)}
+\NormalTok{test\_ratio }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(test\_df}\SpecialCharTok{$}\NormalTok{activity)}\SpecialCharTok{/}\FunctionTok{nrow}\NormalTok{(test\_df)}
+\NormalTok{test\_ratio}
 \end{Highlighting}
 \end{Shaded}
 
@@ -559,11 +588,53 @@ set}\label{preparing-training-and-test-set}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{vis\_mds}\NormalTok{(}\AttributeTok{mds=}\NormalTok{mds\_selected, }\AttributeTok{df=}\NormalTok{balanced\_df, }\AttributeTok{group\_col=}\StringTok{"partition"}\NormalTok{)}
+\FunctionTok{barplot}\NormalTok{(train\_ratio, }
+        \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"skyblue"}\NormalTok{, }\StringTok{"tomato"}\NormalTok{),}
+        \AttributeTok{border =} \StringTok{"white"}\NormalTok{,}
+        \AttributeTok{lwd =} \FloatTok{1.5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-35-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-36-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{barplot}\NormalTok{(test\_ratio, }
+        \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"skyblue"}\NormalTok{, }\StringTok{"tomato"}\NormalTok{),}
+        \AttributeTok{border =} \StringTok{"white"}\NormalTok{,}
+        \AttributeTok{lwd =} \FloatTok{1.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-37-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# create data frame for visualization}
+\NormalTok{mds\_selected }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \CommentTok{\# select mds coordinations for the balanced data set}
+  \AttributeTok{x =}\NormalTok{ mds[}\FunctionTok{c}\NormalTok{(selected\_active\_idx, inactive\_idx),}\DecValTok{1}\NormalTok{],}
+  \AttributeTok{y =}\NormalTok{ mds[}\FunctionTok{c}\NormalTok{(selected\_active\_idx, inactive\_idx),}\DecValTok{2}\NormalTok{],}
+  \AttributeTok{color =}\NormalTok{ balanced\_df}\SpecialCharTok{$}\NormalTok{partition,}
+  \AttributeTok{shape =}\NormalTok{ balanced\_df}\SpecialCharTok{$}\NormalTok{activity}
+\NormalTok{)}
+
+\CommentTok{\# plot}
+\FunctionTok{ggplot}\NormalTok{(mds\_selected, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{color =}\NormalTok{ color, }\AttributeTok{group =}\NormalTok{ shape)) }\SpecialCharTok{+}
+  \CommentTok{\# scatter plot}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{shape =}\NormalTok{ shape)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{x =} \StringTok{"MDS dimension 1"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"MDS dimension 2"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"partition"}\NormalTok{,}
+    \AttributeTok{shape =} \StringTok{"activity"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \CommentTok{\# set theme}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-38-1.pdf}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -814,7 +885,7 @@ cross-validation}\label{implementing-the-k-nn-model-selection-of-the-optimal-num
 \end{Highlighting}
 \end{Shaded}
 
-\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-45-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{hERG_files/figure-latex/unnamed-chunk-48-1.pdf}}
 
 \begin{Shaded}
 \begin{Highlighting}[]

@@ -145,7 +145,7 @@ vis_mds <- function(mds, df, group_col){
   )
   
   # plot
-  ggplot(df_mds, aes(x = x, y = y, color = color)) +
+  ggplot(df_mds, aes(x = x, y = y, color = color, )) +
     # scatter plot
     geom_point(size = 0.8, alpha = 0.7) +
     labs(
@@ -189,20 +189,43 @@ hc <- hclust(dist(dissimi_act_rep), method = "ward.D2")
 active_groups <- cutree(hc, k=350)
 ```
 
-
 ```{r}
 # plot the clusters
-plot(hc)
-rect.hclust(hc , k = 350, border = 2:6)
+plot(hc, hang = -1)
+rect.hclust(hc , k = 350)
 ```
 
 ```{r}
 # pdf("figs/comp_cluster.pdf", width = 10, height = 6)
 # to see how many compounds each group has
 table_group <- table(active_groups)
-barplot(table_group, col = rainbow(length(table_group)),)
+barplot(sort(table_group, decreasing = TRUE),col = rainbow(length(table_group)),)
 # dev.off()
 ```
+
+```{r}
+# visualize top clusters with the highest number of compounds
+top_cls <- 10
+top_cluster <- strtoi(names(sort(table_group, decreasing = TRUE)[1:top_cls]))
+
+# create a copy of training data set
+training_data_cls <- training_data
+
+# get the indices of compounds belong to top clusters and create cluster column for separation
+top_cluster_act_idx <- c()
+for (clu in top_cluster){
+  top_cluster_act_idx <- c(top_cluster_act_idx, which(active_groups==clu))
+  training_data_cls[which(active_groups==clu),"cluster"] <- toString(clu)
+}
+
+# get the similarity matrix and compute mds
+simi_matrix_top10 <- simi_matrix[top_cluster_act_idx, top_cluster_act_idx]
+mds_top10 <- cmdscale(1-simi_matrix_top10)
+
+# visualize
+vis_mds(mds=mds_top10, df=training_data_cls[top_cluster_act_idx,], group_col="cluster")
+```
+
 
 ```{r}
 # Select one molecule per cluster
@@ -274,16 +297,52 @@ table(balanced_df$partition)
 
 ```{r}
 # check the distribution of Active and Inactive molecules in the training set
-table(training_df$activity)/nrow(training_df)
+train_ratio <- table(training_df$activity)/nrow(training_df)
+train_ratio
 ```
 
 ```{r}
 # check the distribution of Active and Inactive molecules in the test set
-table(test_df$activity)/nrow(test_df)
+test_ratio <- table(test_df$activity)/nrow(test_df)
+test_ratio
 ```
 
 ```{r}
-vis_mds(mds=mds_selected, df=balanced_df, group_col="partition")
+barplot(train_ratio, 
+        col = c("skyblue", "tomato"),
+        border = "white",
+        lwd = 1.5)
+```
+```{r}
+barplot(test_ratio, 
+        col = c("skyblue", "tomato"),
+        border = "white",
+        lwd = 1.5)
+```
+
+
+```{r}
+# create data frame for visualization
+mds_selected <- data.frame(
+  # select mds coordinations for the balanced data set
+  x = mds[c(selected_active_idx, inactive_idx),1],
+  y = mds[c(selected_active_idx, inactive_idx),2],
+  color = balanced_df$partition,
+  shape = balanced_df$activity
+)
+
+# plot
+ggplot(mds_selected, aes(x = x, y = y, color = color, group = shape)) +
+  # scatter plot
+  geom_point(size = 0.8, alpha = 0.7, aes(shape = shape)) +
+  labs(
+    x = "MDS dimension 1",
+    y = "MDS dimension 2",
+    color = "partition",
+    shape = "activity"
+  ) +
+  # set theme
+  theme_minimal()
 ```
 
 ```{r}
